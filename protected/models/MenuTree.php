@@ -6,15 +6,19 @@
  * The followings are the available columns in table 'yii_main_menu':
  * @property integer $id
  * @property integer $parent_id
- * @property string $url
  * @property string $title
+ * @property string $action
+ * @property string $view
+ * @property string $url
+ * @property string $urlPic
+ * @property integer $orderCat
  */
 class MenuTree extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return MainMenu the static model class
+	 * @return MenuTree the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -37,12 +41,13 @@ class MenuTree extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('url, title', 'required'),
-			array('parent_id', 'numerical', 'integerOnly'=>true),
-			array('url, title', 'length', 'max'=>255),
+			array('parent_id, title, action, orderCat', 'required'),
+			array('parent_id, orderCat', 'numerical', 'integerOnly'=>true),
+			array('title, url, urlPic', 'length', 'max'=>255),
+			array('action, view', 'length', 'max'=>100),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, parent_id, url, title', 'safe', 'on'=>'search'),
+			array('id, parent_id, title, action, view, url, urlPic, orderCat', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -65,8 +70,12 @@ class MenuTree extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'parent_id' => 'Parent',
-			'url' => 'Url',
 			'title' => 'Title',
+			'action' => 'Action',
+			'view' => 'View',
+			'url' => 'Url',
+			'urlPic' => 'Url Pic',
+			'orderCat' => 'Order Cat',
 		);
 	}
 
@@ -83,8 +92,12 @@ class MenuTree extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('parent_id',$this->parent_id);
-		$criteria->compare('url',$this->url,true);
 		$criteria->compare('title',$this->title,true);
+		$criteria->compare('action',$this->action,true);
+		$criteria->compare('view',$this->view,true);
+		$criteria->compare('url',$this->url,true);
+		$criteria->compare('urlPic',$this->urlPic,true);
+		$criteria->compare('orderCat',$this->orderCat);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

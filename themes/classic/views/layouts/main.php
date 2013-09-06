@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link href="<?php echo Yii::app()->request->baseUrl; ?>/themes/classic/css/common.css" rel="stylesheet" type="text/css" />
         <meta charset="utf-8" />
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
-        <link href="<?php echo Yii::app()->request->baseUrl; ?>/themes/classic/css/common.css" rel="stylesheet" type="text/css" />
     </head>
     <body>
         <div id="main">
@@ -37,6 +37,7 @@
 			    array('label' => 'Акции', 'url' => array('/site/login')),
 			    array('label' => 'Связаться с нами', 'url' => array('/site/logout'))
 			),
+			'id' => 'menuGorUl',
 		    ));
 		    ?>
                 </div>

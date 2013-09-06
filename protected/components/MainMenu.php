@@ -5,45 +5,63 @@ class MainMenu extends CMenu {
     private $url;
 
     public function init() {
-	//Текущий контроллер
-	$controller = Yii::app()->controller->id;
+
 	//Текущий экшин
-	$action = Yii::app()->controller->action->id;
+	$action = Yii::app()->params['action'];
+
 	//Переданный параметр в урл
 	$view = Yii::app()->params['area'];
 	$menu = array();
-	//Получаем список всех пунктов меню
-	foreach (MenuTree::model()->findAll(array('order' => 'parent_id, id')) as $item) {
 
-	    //Проверяем что запись не подпунк
-	    if (0 == $item->parent_id) {
-		//Если текущий контроллер, экшин и переданный в урл параметр равен полученному из базы, то присваиваем
-		//активный класс для текущего пункта в массив menu
-		if (($controller === $item->controller) and ($action === $item->action) and ($view === $item->view)) {
-		    $menu[$item->id][active] = true;
-		}
-		//Присваиваем название пункта и его адрес в массив menu
-		$menu[$item->id][label] = $item->title;
-		//Формируем адрес из урла и гет запроса и присваиваем в массив menu
-		$menu[$item->id][url] = $item->url;
+	//Получаем список всех основных пунктов меню
+	$items = Yii::app()->db->createCommand()
+		->from('yii_main_menu')
+		->where('parent_id = 0')
+		->order('ordercat')
+		->queryAll();
+	//$items = MenuTree::model()->findAll(array('order' => 'ordercat'));
+
+	foreach ($items as $item) {
+
+	    //Если текущий экшин равен полученным из базы и view не задан, то присваиваем
+	    //активный класс для текущего пункта в массив menu
+	    if ($action === $item[action] and $view === '') {
+		$menu[$item[id]][active] = true;
 	    }
-	    //Проверяем является ли запись подпунктом
-	    else {
-		//Если текущий контроллер, экшин и переданный в урл параметр равен полученному из базы, то присваиваем
-		//активный класс для текущего подпункта и его родителя в массив menu
-		if (($controller === $item->controller) and ($action === $item->action) and ($view === $item->view)) {
-		    $menu[$item->parent_id]['items'][$item->id][active] = true;
-		    $menu[$item->parent_id][active] = true;
+
+	    //Присваиваем название пункта и его адрес в массив menu
+	    $menu[$item[id]][label] = $item[title];
+	    $menu[$item[id]][url] = $item[url];
+
+	    //Если текущий экшин из базы и переданный в урл параметр
+	    //равены, то получаем подпункты из базы
+	    if ($action === $item[action]) {
+
+		$podItems = Yii::app()->db->createCommand()
+			->from('yii_main_menu')
+			->where('parent_id =:itemId  and action=:action', array(':itemId' => $item[id], ':action' => $action))
+			->order('ordercat')
+			->queryAll();
+
+		foreach ($podItems as $podItem) {
+
+		    //Присваиваем название подпункта и его адрес в массив menu
+		    $menu[$item[id]]['items'][$podItem[id]][label] = $podItem[title];
+		    $menu[$item[id]]['items'][$podItem[id]][url] = $podItem[url];
+
+		    //Если переданый в урл второй параметр равен полученому из базы
+		    //присваиваем активный класс
+		    if ($action === $podItem[action] and
+			    $view === $podItem[view]) {
+
+			$menu[$item[id]]['items'][$podItem[id]][active] = true;
+			$menu[$item[id]][active] = true;
+		    }
 		}
-		//Присваиваем название подпункта в массив menu
-		$menu[$item->parent_id]['items'][$item->id][label] = $item->title;
-		//Формируем адрес из урла и гет запроса и присваиваем в массив menu
-		$menu[$item->parent_id]['items'][$item->id][url] = $item->url;
-		//Отображаем подпункты только если текущий контроллер - catalog
-		$menu[$item->parent_id]['items'][$item->id][visible] = Yii::app()->controller->id == 'catalog';
 	    }
 	}
 	$this->items = $menu;
+	$this->id = 'menuVerUl';
 	parent::init();
     }
 
