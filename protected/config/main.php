@@ -129,7 +129,7 @@ return array(
             /**
              * Для подключения debug toolbar
              */
-            'class'=>'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
+            'class'=>'ext.yii-debug-toolbar.yii-debug-toolbar.YiiDebugToolbarRoute',
             'ipFilters'=>array('127.0.0.1','192.168.0.194'),
 
 
