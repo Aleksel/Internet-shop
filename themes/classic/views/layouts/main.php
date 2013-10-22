@@ -11,12 +11,11 @@
                 <div id="logo"><a href="/" title="На главную страницу"><span>Побалуйте вашего любимца</span></a></div>
                 <div id="entrance">
 		    <?php if (Yii::app()->user->id): ?>
-			<?php $user = User::model()->findAllByAttributes(array('id' => Yii::app()->user->id)); ?>
-    		    <a id="enter" href="<?php echo Yii::app()->request->baseUrl; ?>/user/login" "><?php echo $user[0][email] ?></a>
-    		    <a id="registration" href="<?php echo Yii::app()->request->baseUrl; ?>/user/logout" ">Выход</a>
+			<a id="enter" href="<?php echo Yii::app()->request->baseUrl; ?>/user/settings"><?php echo Yii::app()->user->getName(); ?></a>
+			<a id="registration" href="<?php echo Yii::app()->request->baseUrl; ?>/user/logout">Выход</a>
 		    <?php else: ?>
-    		    <a id="enter" href="<?php echo Yii::app()->request->baseUrl; ?>/user/login" ">Вход для пользователей</a>
-    		    <a id="registration" href="<?php echo Yii::app()->request->baseUrl; ?>/user/registration" ">Регистрация</a>
+			<a id="enter" href="<?php echo Yii::app()->request->baseUrl; ?>/user/login">Вход для пользователей</a>
+			<a id="registration" href="<?php echo Yii::app()->request->baseUrl; ?>/user/registration">Регистрация</a>
 		    <?php endif; ?>
                 </div>
                 <form action="#">

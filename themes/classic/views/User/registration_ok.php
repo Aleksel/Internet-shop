@@ -1,3 +1,4 @@
+<?php echo '<meta http-equiv="refresh" content="3;URL= '.Yii::app()->user->returnUrl.'">'; ?>
 <div id="content">
     <div id="content3">
         <h1>Спасибо</h1>
